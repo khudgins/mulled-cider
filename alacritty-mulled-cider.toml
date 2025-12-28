@@ -1,0 +1,36 @@
+# Mulled Cider - Alacritty Color Theme
+# A warm, autumnal color theme for Alacritty terminal
+# Based on the Mulled Cider VS Code theme
+
+[colors.primary]
+background = '#2B1F1A'
+foreground = '#E8D5C4'
+
+[colors.cursor]
+text = '#2B1F1A'
+cursor = '#D4A574'
+
+[colors.normal]
+black = '#1F1612'
+red = '#C97D60'
+green = '#8B9A5B'
+yellow = '#D4A574'
+blue = '#9B7E6B'
+magenta = '#B85C38'
+cyan = '#A68B5B'
+white = '#E8D5C4'
+
+[colors.bright]
+black = '#5C3D2E'
+red = '#E89D7A'
+green = '#A4B574'
+yellow = '#F4D1A6'
+blue = '#B89A87'
+magenta = '#D47A5A'
+cyan = '#C4A574'
+white = '#F4E8D4'
+
+[colors.selection]
+text = '#E8D5C4'
+background = '#5C3D2E'
+

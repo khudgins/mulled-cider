@@ -1,0 +1,27 @@
+{
+  "name": "mulled-cider",
+  "displayName": "Mulled Cider",
+  "description": "A warm, autumnal color theme for VS Code",
+  "version": "0.1.0",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Themes"
+  ],
+  "contributes": {
+    "themes": [
+      {
+        "label": "Mulled Cider",
+        "uiTheme": "vs-dark",
+        "path": "./themes/mulled-cider-color-theme.json"
+      }
+    ]
+  },
+  "publisher": "KeithHudgins",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/khudgins/mulled-cider"
+  }
+}
+
