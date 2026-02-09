@@ -1,0 +1,220 @@
+/* Mulled Cider - A warm, autumnal color theme for Obsidian
+ * https://github.com/khudgins/mulled-cider
+ *
+ * Installation:
+ *   1. Copy this file to <your-vault>/.obsidian/snippets/
+ *   2. In Obsidian, go to Settings → Appearance → CSS snippets
+ *   3. Enable "obsidian-mulled-cider"
+ */
+
+.theme-dark.mulled-cider,
+body.theme-dark {
+  /* Base colors */
+  --background-primary:          #2B1F1A;
+  --background-primary-alt:      #241A16;
+  --background-secondary:        #241A16;
+  --background-secondary-alt:    #1F1612;
+  --background-modifier-border:  #6B4E3A;
+  --background-modifier-form-field: #352520;
+  --background-modifier-form-field-highlighted: #3D2A22;
+  --background-modifier-box-shadow: rgba(0, 0, 0, 0.3);
+  --background-modifier-success: #8B9A5B;
+  --background-modifier-error:   #B85C38;
+  --background-modifier-error-rgb: 184, 92, 56;
+  --background-modifier-error-hover: #C97D60;
+  --background-modifier-cover:   rgba(31, 22, 18, 0.8);
+
+  /* Text colors */
+  --text-normal:                 #E8D5C4;
+  --text-muted:                  #8B6F5E;
+  --text-faint:                  #6B4E3A;
+  --text-on-accent:              #E8D5C4;
+  --text-on-accent-inverted:     #2B1F1A;
+  --text-error:                  #E89D7A;
+  --text-error-hover:            #C97D60;
+  --text-success:                #A4B574;
+  --text-selection:              rgba(92, 61, 46, 0.6);
+  --text-highlight-bg:           rgba(212, 165, 116, 0.21);
+  --text-highlight-bg-active:    rgba(212, 165, 116, 0.35);
+  --text-accent:                 #D4A574;
+  --text-accent-hover:           #F4D1A6;
+
+  /* Interactive colors */
+  --interactive-normal:          #352520;
+  --interactive-hover:           #3D2A22;
+  --interactive-accent:          #B85C38;
+  --interactive-accent-rgb:      184, 92, 56;
+  --interactive-accent-hover:    #C97D60;
+  --interactive-success:         #8B9A5B;
+
+  /* Scrollbar */
+  --scrollbar-bg:                rgba(92, 61, 46, 0.0);
+  --scrollbar-thumb-bg:          rgba(92, 61, 46, 0.5);
+  --scrollbar-active-thumb-bg:   rgba(139, 111, 94, 0.5);
+
+  /* Tabs */
+  --tab-text-color:              #8B6F5E;
+  --tab-text-color-focused:      #E8D5C4;
+  --tab-text-color-focused-active: #F4D1A6;
+  --tab-text-color-focused-active-current: #F4D1A6;
+  --tab-background-active:       #2B1F1A;
+  --tab-outline-color:           #D4A574;
+
+  /* Headers */
+  --h1-color:                    #F4D1A6;
+  --h2-color:                    #D4A574;
+  --h3-color:                    #C97D60;
+  --h4-color:                    #B89A87;
+  --h5-color:                    #A4B574;
+  --h6-color:                    #8B6F5E;
+
+  /* Tags */
+  --tag-color:                   #D4A574;
+  --tag-background:              rgba(212, 165, 116, 0.12);
+  --tag-background-hover:        rgba(212, 165, 116, 0.22);
+
+  /* Links */
+  --link-color:                  #D4A574;
+  --link-color-hover:            #F4D1A6;
+  --link-external-color:         #C97D60;
+  --link-external-color-hover:   #E89D7A;
+  --link-unresolved-color:       #9B7E6B;
+  --link-unresolved-opacity:     0.7;
+
+  /* Indentation guides */
+  --indentation-guide-color:     #3D2A22;
+  --indentation-guide-color-active: #6B4E3A;
+
+  /* Blockquotes and callouts */
+  --blockquote-border-color:     #6B4E3A;
+
+  /* Code */
+  --code-normal:                 #D4A574;
+  --code-background:             #352520;
+  --code-comment:                #8B6F5E;
+  --code-function:               #D4A574;
+  --code-important:              #C97D60;
+  --code-keyword:                #C97D60;
+  --code-operator:               #9B7E6B;
+  --code-property:               #E8D5C4;
+  --code-punctuation:            #9B7E6B;
+  --code-string:                 #A4B574;
+  --code-tag:                    #C97D60;
+  --code-value:                  #B85C38;
+
+  /* Graph view */
+  --graph-line:                  #6B4E3A;
+  --graph-node:                  #D4A574;
+  --graph-node-focused:          #F4D1A6;
+  --graph-node-tag:              #8B9A5B;
+  --graph-node-attachment:       #9B7E6B;
+  --graph-node-unresolved:       #5C3D2E;
+
+  /* Checkbox */
+  --checkbox-color:              #B85C38;
+  --checkbox-color-hover:        #C97D60;
+  --checkbox-border-color:       #6B4E3A;
+  --checkbox-border-color-hover: #D4A574;
+
+  /* Toggle */
+  --toggle-thumb-color:          #E8D5C4;
+
+  /* Nav */
+  --nav-item-color:              #8B6F5E;
+  --nav-item-color-hover:        #E8D5C4;
+  --nav-item-color-active:       #F4D1A6;
+  --nav-item-background-hover:   #3D2A22;
+  --nav-item-background-active:  #5C3D2E;
+
+  /* Titlebar */
+  --titlebar-background:         #1F1612;
+  --titlebar-background-focused: #241A16;
+  --titlebar-text-color:         #E8D5C4;
+  --titlebar-text-color-focused: #E8D5C4;
+
+  /* Vault name */
+  --vault-name-color:            #D4A574;
+  --vault-name-font-size:        14px;
+
+  /* Icon colors */
+  --icon-color:                  #8B6F5E;
+  --icon-color-hover:            #D4A574;
+  --icon-color-active:           #F4D1A6;
+  --icon-color-focused:          #D4A574;
+
+  /* Ribbon */
+  --ribbon-background:           #1F1612;
+  --ribbon-background-collapsed: #1F1612;
+
+  /* Dividers */
+  --divider-color:               #3D2A22;
+  --divider-color-hover:         #6B4E3A;
+
+  /* Bold and italic */
+  --bold-color:                  #F4D1A6;
+  --italic-color:                #C97D60;
+}
+
+/* Custom accents for editor elements */
+body.theme-dark .cm-active,
+body.theme-dark .cm-activeLine {
+  background-color: #35252080 !important;
+}
+
+body.theme-dark .cm-selectionMatch {
+  background-color: rgba(212, 165, 116, 0.13) !important;
+}
+
+body.theme-dark .suggestion-item.is-selected {
+  background-color: #5C3D2E;
+  color: #F4D1A6;
+}
+
+body.theme-dark .search-result-file-match-replace-button {
+  background-color: #B85C38;
+  color: #E8D5C4;
+}
+
+/* Callout accent colors */
+body.theme-dark .callout[data-callout="note"] {
+  --callout-color: 155, 126, 107;
+}
+
+body.theme-dark .callout[data-callout="tip"] {
+  --callout-color: 139, 154, 91;
+}
+
+body.theme-dark .callout[data-callout="warning"] {
+  --callout-color: 212, 165, 116;
+}
+
+body.theme-dark .callout[data-callout="danger"],
+body.theme-dark .callout[data-callout="bug"] {
+  --callout-color: 232, 157, 122;
+}
+
+body.theme-dark .callout[data-callout="example"] {
+  --callout-color: 184, 154, 135;
+}
+
+body.theme-dark .callout[data-callout="quote"] {
+  --callout-color: 139, 111, 94;
+}
+
+body.theme-dark .callout[data-callout="success"],
+body.theme-dark .callout[data-callout="done"] {
+  --callout-color: 164, 181, 116;
+}
+
+body.theme-dark .callout[data-callout="fail"],
+body.theme-dark .callout[data-callout="missing"] {
+  --callout-color: 201, 125, 96;
+}
+
+body.theme-dark .callout[data-callout="info"] {
+  --callout-color: 212, 165, 116;
+}
+
+body.theme-dark .callout[data-callout="todo"] {
+  --callout-color: 184, 92, 56;
+}

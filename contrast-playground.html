@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mulled Cider — Contrast Fix Playground</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg-deep: #1F1612;
+    --bg-base: #2B1F1A;
+    --bg-raised: #352520;
+    --bg-surface: #3D2A22;
+    --border: #6B4E3A;
+    --border-dim: #4A3528;
+    --text: #E8D5C4;
+    --text-dim: #8B6F5E;
+    --accent: #D4A574;
+    --accent-bright: #F4D1A6;
+    --rust: #B85C38;
+    --rust-light: #C97D60;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg-deep);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.5;
+  }
+
+  .header {
+    padding: 28px 32px 20px;
+    border-bottom: 1px solid var(--border-dim);
+    background: var(--bg-base);
+  }
+
+  .header h1 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--accent-bright);
+    letter-spacing: -0.3px;
+  }
+
+  .header p {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-top: 4px;
+  }
+
+  .main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px 32px 48px;
+  }
+
+  .problem-section {
+    margin-bottom: 36px;
+  }
+
+  .problem-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .problem-header h2 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .problem-header .desc {
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  .toggle-group {
+    display: flex;
+    gap: 0;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+
+  .toggle-btn {
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 14px;
+    border: 1px solid var(--border);
+    background: var(--bg-raised);
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .toggle-btn:first-child { border-radius: 5px 0 0 5px; }
+  .toggle-btn:last-child { border-radius: 0 5px 5px 0; border-left: none; }
+
+  .toggle-btn.active {
+    background: var(--rust);
+    border-color: var(--rust);
+    color: var(--accent-bright);
+  }
+
+  .toggle-btn:hover:not(.active) {
+    background: var(--bg-surface);
+    color: var(--text);
+  }
+
+  .comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .panel {
+    border: 1px solid var(--border-dim);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: opacity 0.2s;
+  }
+
+  .panel.dimmed { opacity: 0.35; }
+
+  .panel-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 8px 14px;
+    background: var(--bg-raised);
+    border-bottom: 1px solid var(--border-dim);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .panel-label .tag {
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-weight: 500;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  .tag-problem {
+    background: #C97D6030;
+    color: #E89D7A;
+  }
+
+  .tag-fixed {
+    background: #8B9A5B30;
+    color: #A4B574;
+  }
+
+  .code-block {
+    padding: 16px;
+    font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', 'JetBrains Mono', Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    background: var(--bg-base);
+    overflow-x: auto;
+  }
+
+  .code-block .line {
+    white-space: pre;
+    display: block;
+  }
+
+  .code-block .line-num {
+    display: inline-block;
+    width: 28px;
+    text-align: right;
+    margin-right: 16px;
+    color: var(--text-dim);
+    user-select: none;
+    font-size: 11px;
+  }
+
+  .highlight-region {
+    display: inline;
+    padding: 1px 0;
+    border-radius: 2px;
+  }
+
+  /* Syntax classes */
+  .syn-comment { color: #8B6F5E; font-style: italic; }
+  .syn-keyword { color: #C97D60; font-weight: bold; }
+  .syn-string { color: #A4B574; }
+  .syn-function { color: #D4A574; }
+  .syn-variable { color: #E8D5C4; }
+  .syn-constant { color: #B85C38; }
+  .syn-operator { color: #9B7E6B; }
+  .syn-type { color: #B89A87; }
+  .syn-class { color: #F4D1A6; }
+  .syn-number { color: #D4A574; }
+
+  /* Contrast badges */
+  .contrast-table {
+    padding: 12px 14px;
+    background: var(--bg-raised);
+    border-top: 1px solid var(--border-dim);
+  }
+
+  .contrast-table h4 {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+
+  .contrast-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .contrast-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: var(--bg-base);
+    border: 1px solid var(--border-dim);
+  }
+
+  .contrast-badge .swatch {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .contrast-badge .name {
+    color: var(--text-dim);
+    font-size: 10px;
+  }
+
+  .contrast-badge .ratio {
+    font-weight: 600;
+    font-size: 11px;
+    font-family: 'SF Mono', Consolas, monospace;
+  }
+
+  .ratio-pass { color: #A4B574; }
+  .ratio-warn { color: #F4D1A6; }
+  .ratio-fail { color: #E89D7A; }
+
+  /* Color info bar */
+  .color-info {
+    padding: 8px 14px;
+    background: var(--bg-surface);
+    font-size: 11px;
+    color: var(--text-dim);
+    font-family: 'SF Mono', Consolas, monospace;
+    border-top: 1px solid var(--border-dim);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .color-info .color-swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  /* Prompt output */
+  .prompt-section {
+    margin-top: 40px;
+    border: 1px solid var(--border-dim);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .prompt-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: var(--bg-raised);
+    border-bottom: 1px solid var(--border-dim);
+  }
+
+  .prompt-header h3 {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .copy-btn {
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 12px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--bg-surface);
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .copy-btn:hover {
+    background: var(--rust);
+    border-color: var(--rust);
+    color: var(--accent-bright);
+  }
+
+  .copy-btn.copied {
+    background: #8B9A5B;
+    border-color: #8B9A5B;
+    color: #1F1612;
+  }
+
+  .prompt-body {
+    padding: 14px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text);
+    background: var(--bg-base);
+    white-space: pre-wrap;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Mulled Cider — Contrast Fix Playground</h1>
+  <p>Compare current vs proposed highlight backgrounds. Toggle each to see the difference.</p>
+</div>
+
+<div class="main" id="app"></div>
+
+<script>
+const BASE_BG = { r: 43, g: 31, b: 26 }; // #2B1F1A
+
+const TOKENS = {
+  comment:  { name: 'Comments',  hex: '#8B6F5E' },
+  keyword:  { name: 'Keywords',  hex: '#C97D60' },
+  string:   { name: 'Strings',   hex: '#A4B574' },
+  func:     { name: 'Functions', hex: '#D4A574' },
+  variable: { name: 'Variables', hex: '#E8D5C4' },
+  constant: { name: 'Constants', hex: '#B85C38' },
+  operator: { name: 'Operators', hex: '#9B7E6B' },
+  type:     { name: 'Types',     hex: '#B89A87' },
+  class_:   { name: 'Classes',   hex: '#F4D1A6' },
+};
+
+function hexToRgb(hex) {
+  hex = hex.replace('#', '');
+  if (hex.length === 8) {
+    return {
+      r: parseInt(hex.slice(0, 2), 16),
+      g: parseInt(hex.slice(2, 4), 16),
+      b: parseInt(hex.slice(4, 6), 16),
+      a: parseInt(hex.slice(6, 8), 16) / 255
+    };
+  }
+  return {
+    r: parseInt(hex.slice(0, 2), 16),
+    g: parseInt(hex.slice(2, 4), 16),
+    b: parseInt(hex.slice(4, 6), 16),
+    a: 1
+  };
+}
+
+function compositeOver(fgHex, bgRgb) {
+  const fg = hexToRgb(fgHex);
+  const a = fg.a;
+  return {
+    r: Math.round(fg.r * a + bgRgb.r * (1 - a)),
+    g: Math.round(fg.g * a + bgRgb.g * (1 - a)),
+    b: Math.round(fg.b * a + bgRgb.b * (1 - a))
+  };
+}
+
+function rgbToHex(rgb) {
+  return '#' + [rgb.r, rgb.g, rgb.b].map(c => c.toString(16).padStart(2, '0')).join('');
+}
+
+function srgbToLinear(c) {
+  c = c / 255;
+  return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+}
+
+function luminance(hex) {
+  const rgb = hexToRgb(hex);
+  const r = srgbToLinear(rgb.r);
+  const g = srgbToLinear(rgb.g);
+  const b = srgbToLinear(rgb.b);
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+
+function contrastRatio(fgHex, bgHex) {
+  const l1 = luminance(fgHex);
+  const l2 = luminance(bgHex);
+  const lighter = Math.max(l1, l2);
+  const darker = Math.min(l1, l2);
+  return (lighter + 0.05) / (darker + 0.05);
+}
+
+function ratioClass(r) {
+  if (r >= 4.5) return 'ratio-pass';
+  if (r >= 3.0) return 'ratio-warn';
+  return 'ratio-fail';
+}
+
+// State
+const state = {
+  findMatch: 'current',
+  findHighlight: 'current',
+  selection: 'current'
+};
+
+const problems = [
+  {
+    key: 'findMatch',
+    title: 'Find Match (Ctrl+F active match)',
+    desc: 'The highlighted result when using Find. Must be readable across all syntax colors.',
+    current: { bg: '#B85C38', border: 'none', label: '#B85C38 opaque' },
+    proposed: { bg: '#D4A57435', border: '1px solid #D4A574', label: '#D4A57435 + border' },
+    tokens: ['comment', 'keyword', 'string', 'func', 'variable', 'constant', 'operator', 'type'],
+    code: [
+      { parts: [{ t: '  ', c: 'variable' }, { t: '// Search for "calculateTotal" with Ctrl+F', c: 'comment' }] },
+      { parts: [{ t: '  ', c: 'variable' }, { t: 'const', c: 'keyword' }, { t: ' ', c: 'variable' }, { t: 'MAX_RETRIES', c: 'constant' }, { t: ' ', c: 'variable' }, { t: '=', c: 'operator' }, { t: ' ', c: 'variable' }, { t: '5', c: 'func' }, { t: ';', c: 'operator' }] },
+      { parts: [{ t: '  ', c: 'variable' }] },
+      { parts: [{ t: '  ', c: 'variable' }, { t: 'function', c: 'keyword' }, { t: ' ', c: 'variable' }, { t: 'calculateTotal', c: 'func', hl: true }, { t: '(', c: 'operator' }, { t: 'items', c: 'variable' }, { t: ')', c: 'operator' }, { t: ' {', c: 'operator' }] },
+      { parts: [{ t: '    ', c: 'variable' }, { t: 'let', c: 'keyword' }, { t: ' ', c: 'variable' }, { t: 'sum', c: 'variable' }, { t: ' ', c: 'variable' }, { t: '=', c: 'operator' }, { t: ' ', c: 'variable' }, { t: '0', c: 'func' }, { t: ';', c: 'operator' }] },
+      { parts: [{ t: '    ', c: 'variable' }, { t: 'for', c: 'keyword' }, { t: ' (', c: 'operator' }, { t: 'const', c: 'keyword' }, { t: ' ', c: 'variable' }, { t: 'item', c: 'variable' }, { t: ' ', c: 'variable' }, { t: 'of', c: 'keyword' }, { t: ' ', c: 'variable' }, { t: 'items', c: 'variable' }, { t: ')', c: 'operator' }, { t: ' {', c: 'operator' }] },
+      { parts: [{ t: '      ', c: 'variable' }, { t: 'sum', c: 'variable' }, { t: ' ', c: 'variable' }, { t: '+=', c: 'operator' }, { t: ' ', c: 'variable' }, { t: 'item', c: 'variable' }, { t: '.', c: 'operator' }, { t: 'price', c: 'variable' }, { t: ' ', c: 'variable' }, { t: '*', c: 'operator' }, { t: ' ', c: 'variable' }, { t: 'item', c: 'variable' }, { t: '.', c: 'operator' }, { t: 'qty', c: 'variable' }, { t: ';', c: 'operator' }] },
+      { parts: [{ t: '    }', c: 'operator' }] },
+      { parts: [{ t: '    ', c: 'variable' }, { t: 'return', c: 'keyword' }, { t: ' ', c: 'variable' }, { t: 'sum', c: 'variable' }, { t: ' ', c: 'variable' }, { t: '>', c: 'operator' }, { t: ' ', c: 'variable' }, { t: 'MAX_RETRIES', c: 'constant' }, { t: ' ', c: 'variable' }, { t: '?', c: 'operator' }, { t: ' ', c: 'variable' }, { t: 'sum', c: 'variable' }, { t: ' ', c: 'variable' }, { t: ':', c: 'operator' }, { t: ' ', c: 'variable' }, { t: '0', c: 'func' }, { t: ';', c: 'operator' }] },
+      { parts: [{ t: '  }', c: 'operator' }] },
+    ]
+  },
+  {
+    key: 'findHighlight',
+    title: 'Find Match Highlight (other occurrences)',
+    desc: 'Dimmer highlight on non-active matches. Needs subtlety but must remain legible.',
+    current: { bg: '#8B4513', border: 'none', label: '#8B4513 opaque' },
+    proposed: { bg: '#D4A57420', border: '1px solid #D4A57466', label: '#D4A57420 + subtle border' },
+    tokens: ['comment', 'keyword', 'func', 'variable', 'constant', 'operator', 'type'],
+    code: [
+      { parts: [{ t: '  ', c: 'variable' }, { t: '// Other matches of "total" are highlighted here', c: 'comment' }] },
+      { parts: [{ t: '  ', c: 'variable' }, { t: 'const', c: 'keyword' }, { t: ' ', c: 'variable' }, { t: 'total', c: 'variable', hl: true }, { t: ' ', c: 'variable' }, { t: '=', c: 'operator' }, { t: ' ', c: 'variable' }, { t: 'calculateTotal', c: 'func' }, { t: '(', c: 'operator' }, { t: 'cart', c: 'variable' }, { t: ')', c: 'operator' }, { t: ';', c: 'operator' }] },
+      { parts: [{ t: '  ', c: 'variable' }, { t: 'const', c: 'keyword' }, { t: ' ', c: 'variable' }, { t: 'tax', c: 'variable' }, { t: ' ', c: 'variable' }, { t: '=', c: 'operator' }, { t: ' ', c: 'variable' }, { t: 'total', c: 'variable', hl: true }, { t: ' ', c: 'variable' }, { t: '*', c: 'operator' }, { t: ' ', c: 'variable' }, { t: 'TAX_RATE', c: 'constant' }, { t: ';', c: 'operator' }] },
+      { parts: [{ t: '  ', c: 'variable' }] },
+      { parts: [{ t: '  ', c: 'variable' }, { t: '// Display the total with formatting', c: 'comment', hl: true }] },
+      { parts: [{ t: '  ', c: 'variable' }, { t: 'console', c: 'variable' }, { t: '.', c: 'operator' }, { t: 'log', c: 'func' }, { t: '(', c: 'operator' }, { t: '`Grand total: ${', c: 'string' }, { t: 'total', c: 'variable', hl: true }, { t: '}`', c: 'string' }, { t: ')', c: 'operator' }, { t: ';', c: 'operator' }] },
+    ]
+  },
+  {
+    key: 'selection',
+    title: 'Text Selection',
+    desc: 'When selecting code with the cursor. Must keep all syntax colors readable.',
+    current: { bg: '#5C3D2E', border: 'none', label: '#5C3D2E opaque' },
+    proposed: { bg: '#5C3D2E99', border: 'none', label: '#5C3D2E99 (60% opacity)' },
+    tokens: ['comment', 'keyword', 'string', 'func', 'variable', 'constant', 'operator', 'type'],
+    code: [
+      { parts: [{ t: '  ', c: 'variable' }, { t: '// This entire block is selected', c: 'comment', hl: true }] },
+      { parts: [{ t: '  ', c: 'variable', hl: true }, { t: 'async', c: 'keyword', hl: true }, { t: ' ', c: 'variable', hl: true }, { t: 'function', c: 'keyword', hl: true }, { t: ' ', c: 'variable', hl: true }, { t: 'fetchData', c: 'func', hl: true }, { t: '(', c: 'operator', hl: true }, { t: 'url', c: 'variable', hl: true }, { t: ')', c: 'operator', hl: true }, { t: ' {', c: 'operator', hl: true }] },
+      { parts: [{ t: '    ', c: 'variable', hl: true }, { t: 'const', c: 'keyword', hl: true }, { t: ' ', c: 'variable', hl: true }, { t: 'response', c: 'variable', hl: true }, { t: ' ', c: 'variable', hl: true }, { t: '=', c: 'operator', hl: true }, { t: ' ', c: 'variable', hl: true }, { t: 'await', c: 'keyword', hl: true }, { t: ' ', c: 'variable', hl: true }, { t: 'fetch', c: 'func', hl: true }, { t: '(', c: 'operator', hl: true }, { t: 'url', c: 'variable', hl: true }, { t: ')', c: 'operator', hl: true }, { t: ';', c: 'operator', hl: true }] },
+      { parts: [{ t: '    ', c: 'variable', hl: true }, { t: 'if', c: 'keyword', hl: true }, { t: ' (', c: 'operator', hl: true }, { t: '!', c: 'operator', hl: true }, { t: 'response', c: 'variable', hl: true }, { t: '.', c: 'operator', hl: true }, { t: 'ok', c: 'variable', hl: true }, { t: ')', c: 'operator', hl: true }, { t: ' {', c: 'operator', hl: true }] },
+      { parts: [{ t: '      ', c: 'variable', hl: true }, { t: 'throw', c: 'keyword', hl: true }, { t: ' ', c: 'variable', hl: true }, { t: 'new', c: 'keyword', hl: true }, { t: ' ', c: 'variable', hl: true }, { t: 'Error', c: 'class_', hl: true }, { t: '(', c: 'operator', hl: true }, { t: '"Request failed"', c: 'string', hl: true }, { t: ')', c: 'operator', hl: true }, { t: ';', c: 'operator', hl: true }] },
+      { parts: [{ t: '    }', c: 'operator', hl: true }] },
+      { parts: [{ t: '    ', c: 'variable', hl: true }, { t: 'return', c: 'keyword', hl: true }, { t: ' ', c: 'variable', hl: true }, { t: 'response', c: 'variable', hl: true }, { t: '.', c: 'operator', hl: true }, { t: 'json', c: 'func', hl: true }, { t: '()', c: 'operator', hl: true }, { t: ';', c: 'operator', hl: true }] },
+      { parts: [{ t: '  }', c: 'operator', hl: true }] },
+    ]
+  }
+];
+
+function getEffectiveBg(variant) {
+  const rgba = hexToRgb(variant.bg);
+  if (rgba.a < 1) {
+    const comp = compositeOver(variant.bg, BASE_BG);
+    return rgbToHex(comp);
+  }
+  return variant.bg.slice(0, 7);
+}
+
+function renderCodeBlock(problem, variantKey) {
+  const variant = problem[variantKey];
+  const effectiveBg = getEffectiveBg(variant);
+  const borderStyle = variant.border;
+
+  let html = '';
+  problem.code.forEach((line, i) => {
+    html += `<span class="line"><span class="line-num">${i + 1}</span>`;
+    line.parts.forEach(part => {
+      const cls = `syn-${part.c}`;
+      if (part.hl) {
+        html += `<span class="highlight-region" style="background:${effectiveBg};${borderStyle !== 'none' ? 'border:' + borderStyle + ';' : ''}"><span class="${cls}">${escHtml(part.t)}</span></span>`;
+      } else {
+        html += `<span class="${cls}">${escHtml(part.t)}</span>`;
+      }
+    });
+    html += '</span>\n';
+  });
+  return html;
+}
+
+function escHtml(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function renderContrastBadges(problem, variantKey) {
+  const variant = problem[variantKey];
+  const effectiveBg = getEffectiveBg(variant);
+
+  return problem.tokens.map(tk => {
+    const token = TOKENS[tk];
+    const ratio = contrastRatio(token.hex, effectiveBg);
+    const cls = ratioClass(ratio);
+    return `<span class="contrast-badge">
+      <span class="swatch" style="background:${token.hex}"></span>
+      <span class="name">${token.name}</span>
+      <span class="ratio ${cls}">${ratio.toFixed(1)}:1</span>
+    </span>`;
+  }).join('');
+}
+
+function render() {
+  const app = document.getElementById('app');
+  let html = '';
+
+  problems.forEach(problem => {
+    const activeVariant = state[problem.key];
+    html += `
+    <div class="problem-section">
+      <div class="problem-header">
+        <h2>${problem.title}</h2>
+        <span class="desc">${problem.desc}</span>
+        <div class="toggle-group">
+          <button class="toggle-btn ${activeVariant === 'current' ? 'active' : ''}"
+                  onclick="toggle('${problem.key}', 'current')">Current</button>
+          <button class="toggle-btn ${activeVariant === 'proposed' ? 'active' : ''}"
+                  onclick="toggle('${problem.key}', 'proposed')">Proposed</button>
+        </div>
+      </div>
+      <div class="comparison">
+        <div class="panel ${activeVariant === 'proposed' ? 'dimmed' : ''}">
+          <div class="panel-label">
+            Current <span class="tag tag-problem">Problem</span>
+          </div>
+          <div class="color-info">
+            <span class="color-swatch" style="background:${getEffectiveBg(problem.current)}"></span>
+            ${problem.current.label} → rendered ${getEffectiveBg(problem.current)}
+          </div>
+          <div class="code-block">${renderCodeBlock(problem, 'current')}</div>
+          <div class="contrast-table">
+            <h4>Contrast Ratios</h4>
+            <div class="contrast-grid">${renderContrastBadges(problem, 'current')}</div>
+          </div>
+        </div>
+        <div class="panel ${activeVariant === 'current' ? 'dimmed' : ''}">
+          <div class="panel-label">
+            Proposed <span class="tag tag-fixed">Improved</span>
+          </div>
+          <div class="color-info">
+            <span class="color-swatch" style="background:${getEffectiveBg(problem.proposed)}"></span>
+            ${problem.proposed.label} → rendered ${getEffectiveBg(problem.proposed)}
+          </div>
+          <div class="code-block">${renderCodeBlock(problem, 'proposed')}</div>
+          <div class="contrast-table">
+            <h4>Contrast Ratios</h4>
+            <div class="contrast-grid">${renderContrastBadges(problem, 'proposed')}</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  });
+
+  // Prompt output
+  html += `
+  <div class="prompt-section">
+    <div class="prompt-header">
+      <h3>Theme Changes</h3>
+      <button class="copy-btn" onclick="copyPrompt()">Copy</button>
+    </div>
+    <div class="prompt-body" id="prompt-output"></div>
+  </div>`;
+
+  app.innerHTML = html;
+  updatePrompt();
+}
+
+function toggle(key, value) {
+  state[key] = value;
+  render();
+}
+
+function updatePrompt() {
+  const el = document.getElementById('prompt-output');
+  if (!el) return;
+
+  const lines = ['Update the Mulled Cider VS Code theme (themes/mulled-cider-color-theme.json) with these highlight background changes:\n'];
+
+  if (state.findMatch === 'proposed') {
+    lines.push('• Change "editor.findMatchBackground" from "#B85C38" to "#D4A57435"');
+    lines.push('• Add "editor.findMatchBorder": "#D4A574"');
+  }
+  if (state.findHighlight === 'proposed') {
+    lines.push('• Change "editor.findMatchHighlightBackground" from "#8B4513" to "#D4A57420"');
+    lines.push('• Add "editor.findMatchHighlightBorder": "#D4A57466"');
+  }
+  if (state.selection === 'proposed') {
+    lines.push('• Change "editor.selectionBackground" from "#5C3D2E" to "#5C3D2E99"');
+  }
+
+  if (lines.length === 1) {
+    lines.push('(Toggle "Proposed" on any section above to include its changes.)');
+  }
+
+  el.textContent = lines.join('\n');
+}
+
+function copyPrompt() {
+  const text = document.getElementById('prompt-output').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector('.copy-btn');
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Copy';
+      btn.classList.remove('copied');
+    }, 1500);
+  });
+}
+
+render();
+</script>
+</body>
+</html>
