@@ -11,6 +11,11 @@ A warm, autumnal color theme that brings the cozy feeling of autumn to your deve
 | Neovim | `colors/mulled-cider.lua` | [docs/neovim.md](docs/neovim.md) |
 | Obsidian | `obsidian-mulled-cider.css` | [docs/obsidian.md](docs/obsidian.md) |
 | tmux | `tmux-mulled-cider.conf` | [docs/tmux.md](docs/tmux.md) |
+| Sway | `sway-mulled-cider.conf` | [docs/sway.md](docs/sway.md) |
+| Waybar | `waybar-mulled-cider.css` | [docs/waybar.md](docs/waybar.md) |
+| mako | `mako-mulled-cider.conf` | [docs/mako.md](docs/mako.md) |
+| swaylock | `swaylock-mulled-cider.conf` | [docs/swaylock.md](docs/swaylock.md) |
+| wofi | `wofi-mulled-cider.css` | [docs/wofi.md](docs/wofi.md) |
 
 ## Color Palette
 
