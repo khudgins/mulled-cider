@@ -1,0 +1,59 @@
+/*
+ * Mulled Cider - wofi Theme
+ * A warm, autumnal color theme for the wofi launcher
+ * Based on the Mulled Cider VS Code theme
+ *
+ * Usage: copy or symlink to ~/.config/wofi/style.css,
+ *        or run: wofi --style /path/to/wofi-mulled-cider.css
+ */
+
+#window {
+    background-color: #241A16;
+    border: 2px solid #D4A574;
+    border-radius: 6px;
+}
+
+#outer-box {
+    padding: 4px 8px 8px;
+}
+
+#inner-box,
+#scroll {
+    background-color: transparent;
+}
+
+#input {
+    margin: 8px 0;
+    padding: 6px 10px;
+    background-color: #1F1612;
+    color: #E8D5C4;
+    border: 1px solid #6B4E3A;
+    border-radius: 4px;
+}
+
+#input:focus {
+    border-color: #D4A574;
+    box-shadow: none;
+}
+
+#entry {
+    padding: 6px 10px;
+    border-radius: 4px;
+}
+
+#entry:selected {
+    background-color: #5C3D2E;
+    outline: none;
+}
+
+#text {
+    color: #E8D5C4;
+}
+
+#text:selected {
+    color: #F4D1A6;
+}
+
+#img {
+    margin-right: 8px;
+}

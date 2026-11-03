@@ -1,0 +1,151 @@
+/*
+ * Mulled Cider - Waybar Theme
+ * A warm, autumnal color theme for Waybar
+ * Based on the Mulled Cider VS Code theme
+ *
+ * Usage: in your waybar style.css
+ *   @import "mulled-cider.css";
+ *   * { font-family: "Your Font", sans-serif; font-size: 13px; }
+ */
+
+@define-color mc_bg0     #1F1612;
+@define-color mc_bg1     #241A16;
+@define-color mc_bg2     #2B1F1A;
+@define-color mc_surface #352520;
+@define-color mc_border  #3D2A22;
+@define-color mc_select  #5C3D2E;
+@define-color mc_text    #E8D5C4;
+@define-color mc_text_hi #F4D1A6;
+@define-color mc_gold    #D4A574;
+@define-color mc_rust    #B85C38;
+@define-color mc_rust_lt #C97D60;
+@define-color mc_green   #8B9A5B;
+@define-color mc_green_lt #A4B574;
+@define-color mc_muted   #8B6F5E;
+@define-color mc_dim     #6B4E3A;
+
+* {
+    border: none;
+    border-radius: 0;
+    min-height: 0;
+}
+
+window#waybar {
+    background-color: alpha(@mc_bg0, 0.92);
+    color: @mc_text;
+    border-bottom: 2px solid @mc_border;
+}
+
+tooltip {
+    background-color: @mc_bg1;
+    border: 1px solid @mc_dim;
+    border-radius: 4px;
+}
+
+tooltip label {
+    color: @mc_text;
+}
+
+/* Workspaces */
+#workspaces button {
+    padding: 0 8px;
+    color: @mc_muted;
+    background-color: transparent;
+}
+
+#workspaces button:hover {
+    background-color: @mc_surface;
+    color: @mc_text_hi;
+    box-shadow: none;
+    text-shadow: none;
+}
+
+#workspaces button.focused,
+#workspaces button.active {
+    background-color: @mc_gold;
+    color: @mc_bg0;
+    font-weight: bold;
+}
+
+#workspaces button.urgent {
+    background-color: @mc_rust;
+    color: @mc_text;
+}
+
+#mode {
+    background-color: @mc_rust;
+    color: @mc_text;
+    padding: 0 10px;
+    font-weight: bold;
+}
+
+/* Modules */
+#window,
+#clock,
+#battery,
+#cpu,
+#memory,
+#temperature,
+#backlight,
+#network,
+#pulseaudio,
+#wireplumber,
+#bluetooth,
+#idle_inhibitor,
+#power-profiles-daemon,
+#tray {
+    padding: 0 10px;
+    color: @mc_text;
+}
+
+#window {
+    color: @mc_muted;
+}
+
+#clock {
+    color: @mc_gold;
+    font-weight: bold;
+}
+
+#battery.charging,
+#battery.plugged {
+    color: @mc_green_lt;
+}
+
+#battery.warning:not(.charging) {
+    color: @mc_rust_lt;
+}
+
+#battery.critical:not(.charging) {
+    background-color: @mc_rust;
+    color: @mc_text;
+}
+
+#network.disconnected,
+#bluetooth.disabled,
+#bluetooth.off {
+    color: @mc_dim;
+}
+
+#pulseaudio.muted,
+#wireplumber.muted {
+    color: @mc_dim;
+}
+
+#idle_inhibitor.activated {
+    color: @mc_gold;
+}
+
+#temperature.critical {
+    background-color: @mc_rust;
+    color: @mc_text;
+}
+
+#tray > .needs-attention {
+    background-color: @mc_rust;
+}
+
+#tray menu {
+    background-color: @mc_bg1;
+    color: @mc_text;
+}
